@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My ChatGPT</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,13 +13,18 @@
   <!-- SIDEBAR -->
   <aside>
     <button id="newChat">＋ Nuova chat</button>
-    <input id="searchChat" placeholder="Cerca chat…" />
-    <div id="chatList"></div>
+    <input id="searchChat" type="text" placeholder="Cerca chat…">
+    <div id="chatList">
+      <!-- Qui possono comparire le chat salvate, se vuoi implementare -->
+    </div>
   </aside>
 
-  <!-- CHAT -->
+  <!-- CHAT PRINCIPALE -->
   <main>
-    <div id="chat"></div>
+    <div id="chat">
+      <!-- Qui compariranno i messaggi -->
+      <div class="msg bot">Ciao! 👋 Posso fare ricerche, riassunti o esercizi. Dimmi tu 😄</div>
+    </div>
 
     <div id="input-area">
       <textarea id="input" placeholder="Scrivi un messaggio…"></textarea>
@@ -28,7 +34,9 @@
 
 </div>
 
+<!-- SCRIPT BRAIN E LOGICA -->
 <script src="brain.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
