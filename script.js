@@ -1,71 +1,43 @@
-// RIFERIMENTI ELEMENTI
-const chat = document.getElementById("chat");
+const chatDiv = document.getElementById("chat");
 const input = document.getElementById("input");
-const sendBtn = document.getElementById("send");
-const newChatBtn = document.getElementById("newChat");
+const send = document.getElementById("send");
 
-// INVIO MESSAGGIO
-sendBtn.onclick = send;
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    send();
-  }
-});
-
-// NUOVA CHAT
-newChatBtn.onclick = () => {
-  chat.innerHTML = "";
-  addBotMsg("Ciao! 👋 Posso fare ricerche, riassunti o esercizi. Dimmi tu 😄");
-  input.value = "";
-};
-
-// AGGIUNGE MESSAGGIO UTENTE
-function addUserMsg(text) {
-  addMsg(text, "user");
-}
-
-// AGGIUNGE MESSAGGIO BOT
-function addBotMsg(text) {
-  addMsg(text, "bot");
-}
-
-// FUNZIONE GENERICA PER AGGIUNGERE MESSAGGIO
 function addMsg(text, cls) {
   const div = document.createElement("div");
   div.className = "msg " + cls;
-  chat.appendChild(div);
-  typeText(div, text);
+  div.innerText = text;
+  chatDiv.appendChild(div);
+  chatDiv.scrollTop = chatDiv.scrollHeight;
 }
 
-// EFFETTO TYPING
-function typeText(el, text) {
-  let i = 0;
-  const timer = setInterval(() => {
-    el.textContent += text[i++];
-    chat.scrollTop = chat.scrollHeight;
-    if (i >= text.length) clearInterval(timer);
-  }, 15);
+async function saveChatLocal() {
+  if (!currentUser || !currentKey) return;
+  const messages = [];
+  document.querySelectorAll("#chat .msg").forEach(m => {
+    messages.push({ text: m.innerText, cls: m.className.includes("bot") ? "bot" : "user" });
+  });
+  const enc = await encryptData(currentKey, messages);
+  localStorage.setItem("chat_" + currentUser, JSON.stringify(enc));
 }
 
-// FUNZIONE INVIO PRINCIPALE
-async function send() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  addUserMsg(text);  // mostra messaggio utente
+send.onclick = async () => {
+  const txt = input.value.trim();
+  if (!txt) return;
+  addMsg(txt, "user");
   input.value = "";
+  const reply = await brain.reply(txt);
+  addMsg(reply, "bot");
+  await saveChatLocal();
+};
 
-  // messaggio "thinking..."
-  const thinking = document.createElement("div");
-  thinking.className = "msg bot";
-  thinking.textContent = "Sto pensando… 🤔";
-  chat.appendChild(thinking);
-  chat.scrollTop = chat.scrollHeight;
-
-  // ottiene risposta dal brain
-  const reply = await brain.reply(text);
-
-  chat.removeChild(thinking);
-  addBotMsg(reply);
+// Carica chat esistente all'accesso
+async function loadChat() {
+  chatDiv.innerHTML = "";
+  if (!currentUser || !currentKey) return;
+  const c = localStorage.getItem("chat_" + currentUser);
+  if (!c) return;
+  try {
+    const data = await decryptData(currentKey, JSON.parse(c));
+    data.forEach(m => addMsg(m.text, m.cls));
+  } catch {}
 }
