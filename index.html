@@ -3,37 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My ChatGPT Spaziale</title>
+  <title>Chat Famiglia Spaziale</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="app">
+<!-- LOGIN / REGISTER -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <input id="emailLog" placeholder="Email">
+  <input id="passLog" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="forgotPassword()">Password dimenticata</button>
 
-  <!-- SIDEBAR -->
+  <h3>Registrati</h3>
+  <input id="emailReg" placeholder="Email">
+  <input id="passReg" type="password" placeholder="Password">
+  <button onclick="register()">Register</button>
+</div>
+
+<!-- CHAT -->
+<div id="app" style="display:none">
   <aside>
     <button id="newChat">＋ Nuova chat</button>
     <input id="searchChat" type="text" placeholder="Cerca chat…">
-    <div id="chatList">
-      <!-- Qui compariranno le chat salvate se vuoi implementare -->
-    </div>
+    <div id="chatList"></div>
   </aside>
-
-  <!-- CHAT PRINCIPALE -->
   <main>
     <div id="chat">
-      <div class="msg bot">Ciao! 👋 Posso fare ricerche, riassunti, esercizi, traduzioni e molto altro. Dimmi tu 😄</div>
+      <div class="msg bot">Ciao! 👋 Posso fare ricerche, riassunti, esercizi e molto altro 😄</div>
     </div>
-
     <div id="input-area">
       <textarea id="input" placeholder="Scrivi un messaggio…"></textarea>
       <button id="send">Invia</button>
     </div>
   </main>
-
 </div>
 
-<!-- SCRIPT -->
+<script src="crypto.js"></script>
+<script src="auth.js"></script>
 <script src="brain.js"></script>
 <script src="script.js"></script>
 
